@@ -102,7 +102,7 @@ const StoreDetail = () => {
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {!store.visited ? (
             <Button 
               onClick={handleVisit}

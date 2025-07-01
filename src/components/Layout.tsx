@@ -14,7 +14,7 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-md mx-auto px-4 py-4">
-          <h1 className="text-xl font-bold text-gray-800">동네 스탬프 투어</h1>
+          <h1 className="text-xl font-bold text-gray-800">사이사이 🌿</h1>
           <p className="text-sm text-gray-600">우리 동네 상권을 응원해요 🏪</p>
         </div>
       </header>
