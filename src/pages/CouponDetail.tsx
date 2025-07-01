@@ -46,7 +46,7 @@ const CouponDetail = () => {
 
         <div>
           <h3 className="text-lg font-bold text-gray-800 mb-4">참여 가게 목록</h3>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {coupon.stores.map((store) => (
               <Link key={store.id} to={`/store/${store.id}`}>
                 <div className={`p-4 rounded-xl border transition-all ${

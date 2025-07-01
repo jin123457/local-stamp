@@ -1,10 +1,24 @@
 
+import { useState } from 'react';
 import Layout from '@/components/Layout';
 import CouponCard from '@/components/CouponCard';
 import { mockCouponGroups } from '@/data/mockData';
 import { Search, TrendingUp } from 'lucide-react';
 
 const Index = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const filteredCoupons = mockCouponGroups.filter(coupon =>
+    coupon.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    coupon.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    coupon.theme.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    coupon.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearchInput = (e: React.FormEvent<HTMLInputElement>) => {
+    setSearchTerm(e.currentTarget.value);
+  };
+
   return (
     <Layout>
       <div className="p-4">
@@ -15,6 +29,8 @@ const Index = () => {
               type="text"
               placeholder="지역이나 테마로 검색해보세요"
               className="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={searchTerm}
+              onInput={handleSearchInput}
             />
           </div>
         </div>
@@ -41,10 +57,19 @@ const Index = () => {
         </div>
 
         <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-4">참여 가능한 쿠폰 그룹</h2>
-          {mockCouponGroups.map((coupon) => (
-            <CouponCard key={coupon.id} coupon={coupon} />
-          ))}
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            {searchTerm ? `'${searchTerm}' 검색 결과` : '참여 가능한 쿠폰 그룹'}
+          </h2>
+          {filteredCoupons.length > 0 ? (
+            filteredCoupons.map((coupon) => (
+              <CouponCard key={coupon.id} coupon={coupon} />
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-600">검색 결과가 없습니다.</p>
+              <p className="text-sm text-gray-500 mt-2">다른 키워드로 검색해보세요.</p>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
