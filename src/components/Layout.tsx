@@ -19,7 +19,7 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
       </header>
       
-      <main className="max-w-md mx-auto min-h-[calc(100vh-140px)] bg-white">
+      <main className="max-w-md mx-auto min-h-[calc(100vh-140px)] bg-white pb-20">
         {children}
       </main>
       
