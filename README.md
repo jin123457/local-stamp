@@ -1,73 +1,96 @@
-# Welcome to your Lovable project
+# 🌿 사이사이
 
-## Project info
+> **“내 취향을 따라 동네를 걷는 여정”**<br/>
+> **당신의 취향은 어느 골목에 머물고 있나요?**
 
-**URL**: https://lovable.dev/projects/f8cd2063-b1c8-48dd-bd3d-8ad208a05a2f
+---
 
-## How can I edit this code?
+## 🧭 프로젝트 개요
 
-There are several ways of editing your application.
+**온동네**는 지역 소상공인이 모여 **상권별 그룹을 구성**하고,  
+사용자는 해당 그룹을 탐방하며 **스탬프를 적립**하고 보상을 받는  
+**골목 상권 기반 쿠폰+스탬프 서비스**입니다.
 
-**Use Lovable**
+동네의 가게들을 **하나의 테마로 묶고**,  
+사용자는 이 여정을 통해 **소비 그 이상의 연결감**을 느낍니다.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f8cd2063-b1c8-48dd-bd3d-8ad208a05a2f) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 💡 기획 의도
 
-**Use your preferred IDE**
+- 골목 상권이 **단순 소비 공간이 아닌 하나의 경험 루트**로 재조명되길 바람
+- **공통 주제(응원, 취향, 생활권 등)**로 묶인 가게들을 순회하며 정체성 기반 소비 유도
+- 상권 간 협업 구조를 통해 **상생형 로컬 커머스 모델** 구축
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 👥 핵심 페르소나
 
-Follow these steps:
+### 🧍‍♀️ 1. 골목 탐방러 - 이수진 (28세, 마케터)
+- 동네별 인기 카페와 식당을 찾아다니는 트렌드 러버
+- 스탬프 적립형 여행 콘텐츠에 관심 많음
+- SNS에 인증 콘텐츠 업로드를 즐김
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 🧍‍♂️ 2. 생활밀착형 소비자 - 김진우 (41세, 맞벌이 직장인)
+- 반경 1km 내에서 카페, 약국, 문구점 등 주로 소비
+- 쿠폰과 보상 혜택 중심의 사용 목적
+- 실용성과 반복성 높은 사용 패턴
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 🧍 3. 지역 정서형 사용자 - 장영순 (65세, 은퇴자)
+- 오래 다닌 단골 가게에 대한 애정과 관계 중심
+- '우리 동네'라는 정서적 연결에 민감
+- 앱보다는 단순한 UI와 실제 스탬프와 유사한 경험 선호
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 🧍‍♂️ 4. 팬 커뮤니티 탐방러 - 박성민 (34세, 스포츠 팬)
+- 특정 팀(예: 수원 블루윙즈)의 열성 팬
+- 같은 팬이 운영하는 가게를 순회하며 팬심 공유
+- 응원, 교류, 팬 커뮤니티 콘텐츠에 높은 반응
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+---
 
-**Edit a file directly in GitHub**
+## 🔧 MVP 기능 요약
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| 분류 | 기능 | 설명 |
+|------|------|------|
+| 쿠폰 그룹 조회 | 홈에서 상권/주제 그룹 탐색 |
+| 가게 방문 | 그룹 내 가게 상세보기 + 방문 버튼 |
+| 스탬프 적립 | 버튼 클릭으로 방문 인증 (QR은 후속 단계) |
+| 쿠폰 진척 확인 | 스탬프 카드 UI로 진행률 확인 |
+| 보상 수령 | 스탬프 완성 후 보상 안내 |
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🛠️ 기술 스택 (예정)
 
-## What technologies are used for this project?
+- **Frontend**: React + Vite + Tailwind
+- **Backend**: Firebase Firestore (또는 Supabase)
+- **Deploy**: Vercel
+- **기획 도구**: Figma (UX Flow & 와이어프레임), Notion (기획 관리)
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🧩 사용 흐름 예시
 
-## How can I deploy this project?
+1. 사용자가 '수원 블루윙즈 팬존' 쿠폰 그룹을 선택
+2. 참여 가게 리스트에서 마음에 드는 가게 방문
+3. 가게 상세에서 '방문 인증' 버튼 클릭 → 스탬프 적립
+4. 스탬프를 다 모으면 팬 굿즈/음료 쿠폰 보상 획득
 
-Simply open [Lovable](https://lovable.dev/projects/f8cd2063-b1c8-48dd-bd3d-8ad208a05a2f) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 🚀 향후 확장 방향
 
-Yes, you can!
+- **GPS 기반 인증**, **QR 스탬프** 기능 도입
+- **점주용 대시보드** 및 데이터 분석 제공
+- **팬 커뮤니티 연동** (랭킹, 메시지 남기기, 굿즈 이벤트 등)
+- **로컬 관광 상품화** (응원 투어, 테마 미션)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 📎 기획자 한마디
+
+> "이 서비스는 단순한 쿠폰 앱이 아니라,  
+> **골목을 사랑하고, 사람을 기억하고, 이야기를 쌓는 여정**입니다.  
+> 온기를 담은 소비, 그리고 진짜 연결이 이 안에 있습니다."
+
+---
