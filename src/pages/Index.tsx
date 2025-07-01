@@ -7,16 +7,37 @@ import { Search, TrendingUp } from 'lucide-react';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTheme, setSelectedTheme] = useState('');
   
-  const filteredCoupons = mockCouponGroups.filter(coupon =>
-    coupon.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    coupon.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    coupon.theme.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    coupon.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const themes = [
+    { tag: '#망원동감성', filter: '망원동' },
+    { tag: '#생활혜택', filter: '생활' },
+    { tag: '#상생협력', filter: '상생' },
+    { tag: '#팬커뮤니티', filter: '팬' }
+  ];
+
+  const filteredCoupons = mockCouponGroups.filter(coupon => {
+    const matchesSearch = coupon.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      coupon.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      coupon.theme.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      coupon.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesTheme = !selectedTheme || 
+      coupon.title.toLowerCase().includes(selectedTheme.toLowerCase()) ||
+      coupon.theme.toLowerCase().includes(selectedTheme.toLowerCase()) ||
+      coupon.description.toLowerCase().includes(selectedTheme.toLowerCase());
+    
+    return matchesSearch && matchesTheme;
+  });
 
   const handleSearchInput = (e: React.FormEvent<HTMLInputElement>) => {
     setSearchTerm(e.currentTarget.value);
+    setSelectedTheme(''); // 검색 시 테마 필터 초기화
+  };
+
+  const handleThemeClick = (theme: { tag: string; filter: string }) => {
+    setSelectedTheme(theme.filter);
+    setSearchTerm(''); // 테마 클릭 시 검색어 초기화
   };
 
   return (
@@ -41,24 +62,27 @@ const Index = () => {
             <h2 className="text-lg font-bold text-gray-800">인기 스탬프 투어</h2>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2">
-            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap">
-              #망원동감성
-            </span>
-            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap">
-              #생활혜택
-            </span>
-            <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap">
-              #상생협력
-            </span>
-            <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap">
-              #팬커뮤니티
-            </span>
+            {themes.map((theme) => (
+              <button
+                key={theme.tag}
+                onClick={() => handleThemeClick(theme)}
+                className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  selectedTheme === theme.filter
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                }`}
+              >
+                {theme.tag}
+              </button>
+            ))}
           </div>
         </div>
 
         <div>
           <h2 className="text-lg font-bold text-gray-800 mb-4">
-            {searchTerm ? `'${searchTerm}' 검색 결과` : '참여 가능한 쿠폰 그룹'}
+            {searchTerm ? `'${searchTerm}' 검색 결과` : 
+             selectedTheme ? `'${themes.find(t => t.filter === selectedTheme)?.tag}' 테마` :
+             '참여 가능한 쿠폰 그룹'}
           </h2>
           {filteredCoupons.length > 0 ? (
             filteredCoupons.map((coupon) => (

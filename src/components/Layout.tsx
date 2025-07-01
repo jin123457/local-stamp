@@ -26,9 +26,9 @@ const Layout = ({ children }: LayoutProps) => {
       <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t shadow-lg">
         <div className="flex justify-around py-2">
           <Link 
-            to="/" 
+            to="/customer" 
             className={`flex flex-col items-center py-2 px-4 rounded-lg transition-colors ${
-              location.pathname === '/' 
+              location.pathname === '/customer' 
                 ? 'text-blue-600 bg-blue-50' 
                 : 'text-gray-600 hover:text-blue-600'
             }`}
