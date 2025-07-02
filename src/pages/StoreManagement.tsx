@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 const StoreManagement = () => {
   const navigate = useNavigate();
@@ -14,25 +15,65 @@ const StoreManagement = () => {
   const [groupName, setGroupName] = useState('');
   const [groupTheme, setGroupTheme] = useState('');
   const [groupDescription, setGroupDescription] = useState('');
+  const [createdGroups, setCreatedGroups] = useState([
+    { name: '망원동 감성 카페 투어', stores: 3, code: 'ABC123' },
+    { name: '수원 블루윙즈 팬존', stores: 5, code: 'XYZ789' }
+  ]);
 
   const handleCreateGroup = () => {
-    // 여기서 실제로는 백엔드에 그룹을 생성하고 초대 코드를 받아올 것입니다
+    if (!groupName || !groupTheme || !groupDescription) {
+      toast.error('모든 필드를 입력해주세요.');
+      return;
+    }
+
     const newInviteCode = Math.random().toString(36).substr(2, 8).toUpperCase();
-    setInviteCode(newInviteCode);
-    alert(`그룹이 생성되었습니다! 초대 코드: ${newInviteCode}`);
+    const newGroup = {
+      name: groupName,
+      stores: 1,
+      code: newInviteCode
+    };
+
+    setCreatedGroups([...createdGroups, newGroup]);
+    
+    toast.success(`그룹이 생성되었습니다! 초대 코드: ${newInviteCode}`, {
+      description: '다른 상점주들과 코드를 공유하세요.'
+    });
+    
+    // 폼 초기화
+    setGroupName('');
+    setGroupTheme('');
+    setGroupDescription('');
     setShowCreateDialog(false);
   };
 
   const handleJoinGroup = () => {
-    // 여기서 실제로는 초대 코드로 그룹에 참여하는 로직을 구현할 것입니다
-    alert(`그룹에 참여했습니다! 코드: ${inviteCode}`);
+    if (!inviteCode) {
+      toast.error('초대 코드를 입력해주세요.');
+      return;
+    }
+
+    toast.success(`그룹에 참여했습니다! 코드: ${inviteCode}`, {
+      description: '이제 함께 쿠폰을 발행할 수 있습니다.'
+    });
+    
+    setInviteCode('');
     setShowJoinDialog(false);
   };
 
   const handlePublishCoupon = () => {
-    // 쿠폰을 발행하고 메인 페이지로 이동
-    alert('쿠폰 그룹이 발행되었습니다!');
-    navigate('/customer');
+    if (createdGroups.length === 0) {
+      toast.error('먼저 그룹을 생성하거나 참여해주세요.');
+      return;
+    }
+
+    toast.success('쿠폰 그룹이 발행되었습니다! 🎉', {
+      description: '고객들이 이제 스탬프 투어를 시작할 수 있습니다.'
+    });
+    
+    // 약간의 지연 후 고객 페이지로 이동
+    setTimeout(() => {
+      navigate('/customer');
+    }, 1500);
   };
 
   return (
@@ -51,7 +92,7 @@ const StoreManagement = () => {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto p-4 space-y-6">
+      <main className="max-w-md mx-auto p-4 flex flex-col gap-6">
         <div className="grid grid-cols-2 gap-4">
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
@@ -67,7 +108,7 @@ const StoreManagement = () => {
               <DialogHeader>
                 <DialogTitle>새 쿠폰 그룹 만들기</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 <input
                   type="text"
                   placeholder="그룹 이름"
@@ -109,7 +150,7 @@ const StoreManagement = () => {
               <DialogHeader>
                 <DialogTitle>그룹 참여하기</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 <input
                   type="text"
                   placeholder="초대 코드 입력"
@@ -133,15 +174,13 @@ const StoreManagement = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-blue-800">망원동 감성 카페 투어</p>
-                <p className="text-xs text-blue-600">참여 상점: 3개 | 초대 코드: ABC123</p>
-              </div>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-green-800">수원 블루윙즈 팬존</p>
-                <p className="text-xs text-green-600">참여 상점: 5개 | 초대 코드: XYZ789</p>
-              </div>
+            <div className="flex flex-col gap-3">
+              {createdGroups.map((group, index) => (
+                <div key={index} className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-sm font-medium text-blue-800">{group.name}</p>
+                  <p className="text-xs text-blue-600">참여 상점: {group.stores}개 | 초대 코드: {group.code}</p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
