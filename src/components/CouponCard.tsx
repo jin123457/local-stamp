@@ -1,5 +1,5 @@
 
-import { MapPin, Star } from 'lucide-react';
+import { MapPin, BarChart3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CouponGroup } from '@/data/mockData';
 
@@ -23,18 +23,13 @@ const CouponCard = ({ coupon }: CouponCardProps) => {
             </h3>
           </div>
           <div className="text-right">
-            <div className="flex items-center text-gray-600 text-sm mb-1">
+            <div className="flex items-center text-gray-600 text-sm mb-2">
               <MapPin size={12} className="mr-1" />
               {coupon.location}
             </div>
             <div className="flex items-center">
-              {[...Array(coupon.totalStamps)].map((_, index) => (
-                <Star
-                  key={index}
-                  size={16}
-                  className={index < coupon.completedStamps ? 'text-yellow-400 fill-current' : 'text-gray-300'}
-                />
-              ))}
+              <BarChart3 size={16} className="text-gray-600 mr-1" />
+              <span className="text-sm text-gray-600">{Math.round(progress)}% 완료</span>
             </div>
           </div>
         </div>
@@ -52,7 +47,7 @@ const CouponCard = ({ coupon }: CouponCardProps) => {
               {Math.round(progress)}%
             </span>
           </div>
-          <div className="w-full bg-white bg-opacity-70 rounded-full h-2">
+          <div className="w-full bg-white bg-opacity-70 rounded-full h-2 mb-2">
             <div
               className="h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}

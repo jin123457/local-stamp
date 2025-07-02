@@ -13,15 +13,15 @@ const UserTypeSelection = () => {
           <p className="text-sm text-gray-500 font-medium mt-2">당신의 취향은 어느 골목에 머물고 있나요?</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
           <Link to="/customer">
-            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-              <div className="flex items-center space-x-4">
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <User className="text-blue-600" size={24} />
+            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 h-full">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="bg-blue-100 p-4 rounded-full">
+                  <User className="text-blue-600" size={32} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-800">고객으로 시작하기</h3>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">고객으로 시작하기</h3>
                   <p className="text-sm text-gray-600">동네 상권을 탐방하고 스탬프를 모아보세요</p>
                 </div>
               </div>
@@ -29,13 +29,13 @@ const UserTypeSelection = () => {
           </Link>
 
           <Link to="/store-management">
-            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-              <div className="flex items-center space-x-4">
-                <div className="bg-green-100 p-3 rounded-full">
-                  <Store className="text-green-600" size={24} />
+            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 h-full">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="bg-green-100 p-4 rounded-full">
+                  <Store className="text-green-600" size={32} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-800">상점 운영하기</h3>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">상점 운영하기</h3>
                   <p className="text-sm text-gray-600">다른 상점과 함께 쿠폰 그룹을 만들어보세요</p>
                 </div>
               </div>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Layout from '@/components/Layout';
 import CouponCard from '@/components/CouponCard';
 import { mockCouponGroups } from '@/data/mockData';
-import { Search, TrendingUp } from 'lucide-react';
+import { Search, TrendingUp, Grid3X3 } from 'lucide-react';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,6 +40,11 @@ const Index = () => {
     setSearchTerm(''); // 테마 클릭 시 검색어 초기화
   };
 
+  const handleShowAll = () => {
+    setSelectedTheme('');
+    setSearchTerm('');
+  };
+
   return (
     <Layout>
       <div className="p-4">
@@ -57,9 +62,20 @@ const Index = () => {
         </div>
 
         <div className="mb-6">
-          <div className="flex items-center mb-3">
-            <TrendingUp className="text-blue-600 mr-2" size={20} />
-            <h2 className="text-lg font-bold text-gray-800">인기 스탬프 투어</h2>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <TrendingUp className="text-blue-600 mr-2" size={20} />
+              <h2 className="text-lg font-bold text-gray-800">인기 스탬프 투어</h2>
+            </div>
+            {(selectedTheme || searchTerm) && (
+              <button
+                onClick={handleShowAll}
+                className="flex items-center text-blue-600 text-sm font-medium"
+              >
+                <Grid3X3 size={16} className="mr-1" />
+                전체보기
+              </button>
+            )}
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2">
             {themes.map((theme) => (
