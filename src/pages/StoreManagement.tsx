@@ -1,23 +1,42 @@
 
 import { useState } from 'react';
-import { ArrowLeft, Users, Share, Plus } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Users, Share, Plus, Link, Gift, Store } from 'lucide-react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 const StoreManagement = () => {
   const navigate = useNavigate();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showJoinDialog, setShowJoinDialog] = useState(false);
+  const [showBenefitDialog, setShowBenefitDialog] = useState(false);
   const [inviteCode, setInviteCode] = useState('');
   const [groupName, setGroupName] = useState('');
   const [groupTheme, setGroupTheme] = useState('');
   const [groupDescription, setGroupDescription] = useState('');
+  const [completionBenefit, setCompletionBenefit] = useState('');
+  const [storeBenefit, setStoreBenefit] = useState('');
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null);
+  
   const [createdGroups, setCreatedGroups] = useState([
-    { name: '망원동 감성 카페 투어', stores: 3, code: 'ABC123' },
-    { name: '수원 블루윙즈 팬존', stores: 5, code: 'XYZ789' }
+    { 
+      name: '망원동 감성 카페 투어', 
+      stores: 3, 
+      code: 'ABC123',
+      completionBenefit: '망원동 상품권 1만원',
+      storeBenefit: '음료 10% 할인'
+    },
+    { 
+      name: '수원 블루윙즈 팬존', 
+      stores: 5, 
+      code: 'XYZ789',
+      completionBenefit: '팬 굿즈 세트',
+      storeBenefit: '응원 음료 무료 제공'
+    }
   ]);
 
   const handleCreateGroup = () => {
@@ -30,7 +49,9 @@ const StoreManagement = () => {
     const newGroup = {
       name: groupName,
       stores: 1,
-      code: newInviteCode
+      code: newInviteCode,
+      completionBenefit: completionBenefit || '혜택 미설정',
+      storeBenefit: storeBenefit || '혜택 미설정'
     };
 
     setCreatedGroups([...createdGroups, newGroup]);
@@ -43,6 +64,8 @@ const StoreManagement = () => {
     setGroupName('');
     setGroupTheme('');
     setGroupDescription('');
+    setCompletionBenefit('');
+    setStoreBenefit('');
     setShowCreateDialog(false);
   };
 
@@ -58,6 +81,47 @@ const StoreManagement = () => {
     
     setInviteCode('');
     setShowJoinDialog(false);
+  };
+
+  const handleShareInviteLink = (code: string) => {
+    const inviteLink = `${window.location.origin}/store-management?invite=${code}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: '사이사이 그룹 초대',
+        text: `함께 쿠폰 그룹을 운영해보세요! 초대 코드: ${code}`,
+        url: inviteLink,
+      });
+    } else {
+      navigator.clipboard.writeText(inviteLink);
+      toast.success('초대 링크가 클립보드에 복사되었습니다!');
+    }
+  };
+
+  const handleUpdateBenefits = () => {
+    if (selectedGroupIndex === null) return;
+
+    const updatedGroups = [...createdGroups];
+    updatedGroups[selectedGroupIndex] = {
+      ...updatedGroups[selectedGroupIndex],
+      completionBenefit: completionBenefit || '혜택 미설정',
+      storeBenefit: storeBenefit || '혜택 미설정'
+    };
+
+    setCreatedGroups(updatedGroups);
+    toast.success('혜택이 업데이트되었습니다!');
+    
+    setCompletionBenefit('');
+    setStoreBenefit('');
+    setSelectedGroupIndex(null);
+    setShowBenefitDialog(false);
+  };
+
+  const openBenefitDialog = (index: number) => {
+    setSelectedGroupIndex(index);
+    setCompletionBenefit(createdGroups[index].completionBenefit);
+    setStoreBenefit(createdGroups[index].storeBenefit);
+    setShowBenefitDialog(true);
   };
 
   const handlePublishCoupon = () => {
@@ -81,9 +145,9 @@ const StoreManagement = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center">
-            <Link to="/" className="mr-3">
+            <RouterLink to="/" className="mr-3">
               <ArrowLeft className="text-gray-600" size={24} />
-            </Link>
+            </RouterLink>
             <div>
               <h1 className="text-xl font-bold text-gray-800">상점 관리</h1>
               <p className="text-sm text-gray-600">쿠폰 그룹을 만들고 관리하세요</p>
@@ -104,31 +168,56 @@ const StoreManagement = () => {
                 </CardContent>
               </Card>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-sm mx-auto">
               <DialogHeader>
                 <DialogTitle>새 쿠폰 그룹 만들기</DialogTitle>
               </DialogHeader>
               <div className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="그룹 이름"
-                  className="w-full p-3 border rounded-lg"
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="테마 (예: #망원동감성)"
-                  className="w-full p-3 border rounded-lg"
-                  value={groupTheme}
-                  onChange={(e) => setGroupTheme(e.target.value)}
-                />
-                <textarea
-                  placeholder="그룹 설명"
-                  className="w-full p-3 border rounded-lg h-20 resize-none"
-                  value={groupDescription}
-                  onChange={(e) => setGroupDescription(e.target.value)}
-                />
+                <div>
+                  <Label htmlFor="groupName">그룹 이름</Label>
+                  <Input
+                    id="groupName"
+                    placeholder="예: 망원동 감성 카페 투어"
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="groupTheme">테마</Label>
+                  <Input
+                    id="groupTheme"
+                    placeholder="예: #망원동감성"
+                    value={groupTheme}
+                    onChange={(e) => setGroupTheme(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="groupDescription">그룹 설명</Label>
+                  <Input
+                    id="groupDescription"
+                    placeholder="그룹에 대한 간단한 설명"
+                    value={groupDescription}
+                    onChange={(e) => setGroupDescription(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="completionBenefit">완주 혜택 (선택사항)</Label>
+                  <Input
+                    id="completionBenefit"
+                    placeholder="예: 상품권 1만원"
+                    value={completionBenefit}
+                    onChange={(e) => setCompletionBenefit(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="storeBenefit">개별 가게 혜택 (선택사항)</Label>
+                  <Input
+                    id="storeBenefit"
+                    placeholder="예: 음료 10% 할인"
+                    value={storeBenefit}
+                    onChange={(e) => setStoreBenefit(e.target.value)}
+                  />
+                </div>
                 <Button onClick={handleCreateGroup} className="w-full">
                   그룹 생성하기
                 </Button>
@@ -146,18 +235,21 @@ const StoreManagement = () => {
                 </CardContent>
               </Card>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-sm mx-auto">
               <DialogHeader>
                 <DialogTitle>그룹 참여하기</DialogTitle>
               </DialogHeader>
               <div className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="초대 코드 입력"
-                  className="w-full p-3 border rounded-lg text-center"
-                  value={inviteCode}
-                  onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                />
+                <div>
+                  <Label htmlFor="inviteCode">초대 코드</Label>
+                  <Input
+                    id="inviteCode"
+                    placeholder="초대 코드 입력"
+                    className="text-center"
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                  />
+                </div>
                 <Button onClick={handleJoinGroup} className="w-full">
                   그룹 참여하기
                 </Button>
@@ -176,14 +268,71 @@ const StoreManagement = () => {
           <CardContent>
             <div className="flex flex-col gap-3">
               {createdGroups.map((group, index) => (
-                <div key={index} className="bg-blue-50 p-3 rounded-lg">
-                  <p className="text-sm font-medium text-blue-800">{group.name}</p>
-                  <p className="text-xs text-blue-600">참여 상점: {group.stores}개 | 초대 코드: {group.code}</p>
+                <div key={index} className="bg-blue-50 p-3 rounded-lg border">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-blue-800">{group.name}</p>
+                      <p className="text-xs text-blue-600">참여 상점: {group.stores}개 | 코드: {group.code}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleShareInviteLink(group.code)}
+                        className="text-blue-600 hover:text-blue-800 p-1"
+                      >
+                        <Link size={16} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => openBenefitDialog(index)}
+                        className="text-blue-600 hover:text-blue-800 p-1"
+                      >
+                        <Gift size={16} />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="text-xs text-blue-700">
+                    <p>완주 혜택: {group.completionBenefit}</p>
+                    <p>개별 혜택: {group.storeBenefit}</p>
+                  </div>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
+
+        <Dialog open={showBenefitDialog} onOpenChange={setShowBenefitDialog}>
+          <DialogContent className="max-w-sm mx-auto">
+            <DialogHeader>
+              <DialogTitle>혜택 설정</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <div>
+                <Label htmlFor="editCompletionBenefit">완주 혜택</Label>
+                <Input
+                  id="editCompletionBenefit"
+                  placeholder="예: 상품권 1만원"
+                  value={completionBenefit}
+                  onChange={(e) => setCompletionBenefit(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="editStoreBenefit">개별 가게 혜택</Label>
+                <Input
+                  id="editStoreBenefit"
+                  placeholder="예: 음료 10% 할인"
+                  value={storeBenefit}
+                  onChange={(e) => setStoreBenefit(e.target.value)}
+                />
+              </div>
+              <Button onClick={handleUpdateBenefits} className="w-full">
+                혜택 업데이트
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <Button onClick={handlePublishCoupon} className="w-full bg-blue-600 hover:bg-blue-700">
           쿠폰 그룹 발행하기
