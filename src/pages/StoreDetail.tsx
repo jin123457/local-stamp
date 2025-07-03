@@ -3,13 +3,16 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, Phone, Clock, Gift, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Layout from '@/components/Layout';
+import StoreMap from '@/components/StoreMap';
+import QRStampAuth from '@/components/QRStampAuth';
+import SNSShare from '@/components/SNSShare';
 import { mockCouponGroups } from '@/data/mockData';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
 const StoreDetail = () => {
   const { id } = useParams();
-  const [isVisiting, setIsVisiting] = useState(false);
+  const [showQRAuth, setShowQRAuth] = useState(false);
   
   // Find store across all coupon groups
   let store = null;
@@ -34,12 +37,7 @@ const StoreDetail = () => {
     );
   }
 
-  const handleVisit = async () => {
-    setIsVisiting(true);
-    
-    // Simulate visit process
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+  const handleVisitSuccess = () => {
     // Update store visited status (in real app, this would be API call)
     store.visited = true;
     
@@ -47,7 +45,7 @@ const StoreDetail = () => {
       description: `혜택: ${store.reward}`,
     });
     
-    setIsVisiting(false);
+    setShowQRAuth(false);
   };
 
   return (
@@ -93,7 +91,7 @@ const StoreDetail = () => {
             </div>
           </div>
           
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 border border-green-200">
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 border border-green-200 mb-4">
             <div className="flex items-center mb-2">
               <Gift className="text-green-600 mr-2" size={20} />
               <span className="font-bold text-green-800">방문 혜택</span>
@@ -102,18 +100,36 @@ const StoreDetail = () => {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="mb-6">
+          <StoreMap storeName={store.name} address={store.address} />
+        </div>
+
+        <div className="space-y-4 mb-6">
           {!store.visited ? (
-            <Button 
-              onClick={handleVisit}
-              disabled={isVisiting}
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold rounded-xl"
-            >
-              {isVisiting ? '방문 인증 중...' : '🏪 방문하고 스탬프 받기'}
-            </Button>
+            showQRAuth ? (
+              <QRStampAuth 
+                storeName={store.name} 
+                onSuccess={handleVisitSuccess}
+              />
+            ) : (
+              <Button 
+                onClick={() => setShowQRAuth(true)}
+                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold rounded-xl"
+              >
+                🏪 방문하고 스탬프 받기
+              </Button>
+            )
           ) : (
-            <div className="w-full py-3 bg-green-50 border border-green-200 text-green-800 font-bold rounded-xl text-center">
-              ✅ 방문 완료! 혜택을 받아보세요
+            <div className="space-y-4">
+              <div className="w-full py-3 bg-green-50 border border-green-200 text-green-800 font-bold rounded-xl text-center">
+                ✅ 방문 완료! 혜택을 받아보세요
+              </div>
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <SNSShare 
+                  title={`${store.name} 방문 완료`}
+                  description={`${parentCoupon.title}에서 ${store.name}을 방문했어요! ${store.reward} 혜택도 받았답니다 🎉`}
+                />
+              </div>
             </div>
           )}
           
@@ -124,7 +140,7 @@ const StoreDetail = () => {
           </Link>
         </div>
 
-        <div className="mt-6 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+        <div className="p-4 bg-yellow-50 rounded-xl border border-yellow-200">
           <p className="text-yellow-800 text-sm">
             💡 <strong>이용 팁:</strong> 가게 방문 시 "스탬프 투어 참여"라고 말씀해주시면 
             더 친절한 서비스를 받으실 수 있어요!

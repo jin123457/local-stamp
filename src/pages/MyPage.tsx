@@ -3,6 +3,8 @@ import Layout from '@/components/Layout';
 import { User, TrendingUp, Gift, Share2, Trophy, Star } from 'lucide-react';
 import { mockCouponGroups } from '@/data/mockData';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
+import SNSShare from '@/components/SNSShare';
 
 const MyPage = () => {
   const totalStamps = mockCouponGroups.reduce((acc, coupon) => acc + coupon.completedStamps, 0);
@@ -19,10 +21,6 @@ const MyPage = () => {
 
   const levelInfo = getCurrentLevel(totalStamps);
   
-  const handleShare = () => {
-    toast.success('공유 링크가 복사되었습니다! 📱');
-  };
-
   const handleClaimReward = (coupon: any) => {
     toast.success(`${coupon.finalReward} 혜택을 받았습니다! 🎉`);
   };
@@ -95,22 +93,15 @@ const MyPage = () => {
               <Gift className="text-green-600 mr-2" size={20} />
               <h3 className="text-lg font-bold text-gray-800">완주 혜택</h3>
             </div>
-            <button
-              onClick={handleShare}
-              className="flex items-center text-blue-600 text-sm font-medium"
-            >
-              <Share2 size={16} className="mr-1" />
-              공유하기
-            </button>
           </div>
           
           {completedGroups > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-3 mb-4">
               {mockCouponGroups
                 .filter(coupon => coupon.completedStamps === coupon.totalStamps)
                 .map((coupon) => (
                   <div key={coupon.id} className="bg-green-50 rounded-lg p-4 border border-green-200">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mb-3">
                       <div>
                         <h4 className="font-bold text-green-800">{coupon.title}</h4>
                         <p className="text-sm text-green-600 mt-1">🎁 {coupon.finalReward}</p>
@@ -122,6 +113,10 @@ const MyPage = () => {
                         혜택 받기
                       </button>
                     </div>
+                    <SNSShare 
+                      title={`${coupon.title} 완주`}
+                      description={`${coupon.title}를 완주하고 ${coupon.finalReward} 혜택을 받았어요!`}
+                    />
                   </div>
                 ))}
             </div>
@@ -136,40 +131,42 @@ const MyPage = () => {
             {mockCouponGroups.map((coupon) => {
               const progress = (coupon.completedStamps / coupon.totalStamps) * 100;
               return (
-                <div key={coupon.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h4 className="font-bold text-gray-800">{coupon.title}</h4>
-                      <p className="text-gray-600 text-sm mt-1">{coupon.location}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm text-blue-600 font-medium">
-                        {Math.round(progress)}% 완료
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-3">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full transition-all duration-300"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      {coupon.completedStamps}/{coupon.totalStamps} 완료
-                    </span>
-                    {coupon.completedStamps === coupon.totalStamps && (
-                      <div className="flex items-center text-green-600">
-                        <Gift size={16} className="mr-1" />
-                        <span className="text-sm font-medium">혜택 가능</span>
+                <Link key={coupon.id} to={`/coupon/${coupon.id}`}>
+                  <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h4 className="font-bold text-gray-800">{coupon.title}</h4>
+                        <p className="text-gray-600 text-sm mt-1">{coupon.location}</p>
                       </div>
-                    )}
+                      <div className="text-right">
+                        <span className="text-sm text-blue-600 font-medium">
+                          {Math.round(progress)}% 완료
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="mb-3">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full transition-all duration-300"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">
+                        {coupon.completedStamps}/{coupon.totalStamps} 완료
+                      </span>
+                      {coupon.completedStamps === coupon.totalStamps && (
+                        <div className="flex items-center text-green-600">
+                          <Gift size={16} className="mr-1" />
+                          <span className="text-sm font-medium">혜택 가능</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
